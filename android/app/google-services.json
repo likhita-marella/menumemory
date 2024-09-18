@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "908355681688",
+    "project_id": "menumemory-4b957",
+    "storage_bucket": "menumemory-4b957.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:908355681688:android:93fb4ee194bc4b30d27fed",
+        "android_client_info": {
+          "package_name": "com.example.menumemory"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "908355681688-6grgjpvmk86j563e16la7sm7d960kk89.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBCOSpXFhTX1gkMCiQj1WcH42oyOJW8jpQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "908355681688-6grgjpvmk86j563e16la7sm7d960kk89.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "908355681688-8gg6tprui71jsc0eeak12vjh7i4h555o.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.menumemory"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
