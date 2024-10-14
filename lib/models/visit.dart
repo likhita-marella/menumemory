@@ -1,12 +1,13 @@
 import 'dart:ffi';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
 import 'package:menumemory/models/order.dart';
 
 import 'restaurant.dart';
 
 class Visit {
-   Timestamp datetime;
+   DateTime datetime;
    List<VisitOrder> order;
    String restaurantId;
    Restaurant restaurant_info;
@@ -36,7 +37,8 @@ class Visit {
    }
 
    static Visit fromJson(Map<String, dynamic> snapshotData) {
-      Timestamp dateTime = snapshotData["datetime"];
+      Timestamp dateTimeTimestamp = snapshotData["datetime"];
+      DateTime dateTime = DateTime.fromMicrosecondsSinceEpoch(dateTimeTimestamp.microsecondsSinceEpoch);
       String restaurantId = snapshotData["restaurant_id"];
 
       Map<String, dynamic> restaurantInfo = snapshotData["restaurant_info"] as Map<String, dynamic>;

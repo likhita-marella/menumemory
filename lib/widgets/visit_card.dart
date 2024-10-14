@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:menumemory/models/visit.dart';
 
 class VisitCard extends StatefulWidget {
@@ -25,7 +26,17 @@ class _VisitCardState extends State<VisitCard> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(widget.visit!.restaurant_info.name, style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  textBaseline: TextBaseline.ideographic,
+                  children: [
+                    Text(widget.visit!.restaurant_info.name, style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),),
+                    SizedBox(width: 10,),
+                    Text(DateFormat("dd MMM yyyy  K:ma").format(widget.visit.datetime),
+                      )
+                  ],
+                ),
                 IconButton(onPressed: () {
                   setState(() {
                     isMinimized = !isMinimized;

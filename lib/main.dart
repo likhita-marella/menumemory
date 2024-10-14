@@ -24,7 +24,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.purple,
         appBarTheme: AppBarTheme(
-          backgroundColor: Colors.orange[400]
+          backgroundColor: Color.fromARGB(255, 233, 221, 255),
         )
       ),
       initialRoute: FirebaseAuth.instance.currentUser == null ? '/sign-in' : '/home',
