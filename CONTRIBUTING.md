@@ -9,6 +9,7 @@
 Menumemory uses Firebase as its backend. It uses cloud firestore as the db, FB Auth for auth and cloud functions as of right now. The Algolia FB extension is installed for search
 
 There are 2 top level collections in firestore as of right now: `restraurants` and `users`. 
-- Every doc in the `restaurants` collection correlates to one restaurant. There is an Algolia index on the `restaurants` collection to allow searching restaurats in the future.
+- Every doc in the `restaurants` collection correlates to one restaurant. There is an Algolia index on the `restaurants` collection to allow searching restaurants in the future.
+- There is a `visits` collection under `/restaurants/<restaurant_id>` Each doc in this `visits` collection stores the details of visits to that particular restaurant for all users. This is a copy of the doc that will be created in `/users/<user_id>/visits` except that it will have `user_id` attribute instead of `restaurant_info`. A Cloud function to copy the visit doc from users collection to restaurants is yet to be added
 - Every doc in the `users` collection correlates to one user. This doc is auto-created by the `onUserSignUp` cloud function whenever a new user is created in firebase auth.
-- There is a `visits` collection under /users/<user_id>/ Each doc in this `visits` collection stores the details of one particular retaurant visit for that user.
+- There is a `visits` collection under /users/<user_id>/ Each doc in this `visits` collection stores the details of one particular restaurant visit for that user.
