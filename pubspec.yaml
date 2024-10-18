@@ -95,3 +95,6 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages
+dependencies:
+  cloud_firestore: ^5.0.0  # Update to the latest version
+  firebase_core: ^2.0.0
