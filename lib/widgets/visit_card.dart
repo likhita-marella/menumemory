@@ -14,7 +14,6 @@ class VisitCard extends StatefulWidget {
 class _VisitCardState extends State<VisitCard> {
   bool isMinimized = false;
   bool seeAll = false;
-  ValueNotifier<bool> isCollapsed = ValueNotifier(true);
 
   @override
   Widget build(BuildContext context) {
@@ -75,9 +74,8 @@ class _VisitCardState extends State<VisitCard> {
                             ReadMoreText(
                               '"${order.review_text!}"',
                               trimMode: TrimMode.Line,
-                              isCollapsed: isCollapsed,
                               trimLines: 3,
-                              colorClickableText: isCollapsed.value ? Color(0xffF48606) : Colors.black,
+                              colorClickableText: Colors.black,
                               trimCollapsedText: ' Read more',
                               trimExpandedText: ' Read less',
                               moreStyle: TextStyle(fontSize: 16),
