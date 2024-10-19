@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:menumemory/models/visit.dart';
+import 'package:readmore/readmore.dart';
 
 class VisitCard extends StatefulWidget {
   Visit visit;
@@ -54,6 +55,7 @@ class _VisitCardState extends State<VisitCard> {
                               isMinimized = !isMinimized;
                             });
                           },
+
                           icon: Icon(isMinimized
                               ? Icons.arrow_drop_up_sharp
                               : Icons.arrow_drop_down_sharp))
@@ -118,6 +120,40 @@ class _VisitCardState extends State<VisitCard> {
                                 Divider(thickness: 1, color: Colors.grey)
                               ],
                             )),
+                          icon: Icon(isMinimized ? Icons.arrow_drop_up_sharp : Icons.arrow_drop_down_sharp))
+                    ],
+                  ),
+                  if (!isMinimized)
+                    ...widget.visit!.order.sublist(0, seeAll ? widget.visit!.order.length : 2).map((order) => Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            SizedBox(height: 5),
+                            Row(
+                              children: [
+                                Text(
+                                  order.dish.name,
+                                  style: TextStyle(fontSize: 20),
+                                ),
+                                SizedBox(width: 10),
+                                Text("${order.rating}/5")
+                              ],
+                            ),
+
+                            /// Added the readmore functionality
+                            ReadMoreText(
+                              '"${order.review_text!}"',
+                              trimMode: TrimMode.Line,
+                              trimLines: 3,
+                              colorClickableText: Colors.black,
+                              trimCollapsedText: ' Read more',
+                              trimExpandedText: ' Read less',
+                              moreStyle: TextStyle(fontSize: 16),
+                              style: TextStyle(fontSize: 16),
+                            ),
+                            SizedBox(height: 5),
+                            Divider(thickness: 1, color: Colors.grey)
+                          ],
+                        )),
                   if (!isMinimized)
                     Center(
                         child: TextButton(
