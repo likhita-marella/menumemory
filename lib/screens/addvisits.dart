@@ -15,17 +15,19 @@ class _AddVisitState extends State<AddVisit> {
   final _formKey = GlobalKey<FormState>();
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  Restaurant restaurant =  Restaurant(
-      id: "05b729d0-74de-11ef-920e-76e1daf4cd58",
-      name: "Chaatimes",
-      area: "Basavanagudi",
-      address: "39, 3rd Main,4th Cross, Hanumanth Nagar, Near, Basavanagudi, Bangalore"
+  Restaurant restaurant = Restaurant(
+    id: "05b729d0-74de-11ef-920e-76e1daf4cd58",
+    name: "Chaatimes",
+    area: "Basavanagudi",
+    address:
+    "39, 3rd Main,4th Cross, Hanumanth Nagar, Near, Basavanagudi, Bangalore",
   );
+
   DateTime? visitDateTime;
   final List<VisitOrder> orders = [];
   final TextEditingController _dishController = TextEditingController();
   final TextEditingController _reviewController = TextEditingController();
-  double? _rating; // Nullable rating
+  double? _rating;
 
   Future<void> _saveVisit() async {
     if (_formKey.currentState!.validate()) {
@@ -39,7 +41,7 @@ class _AddVisitState extends State<AddVisit> {
         });
         ScaffoldMessenger.of(context)
             .showSnackBar(SnackBar(content: Text('Visit added successfully!')));
-        Navigator.pop(context); // Navigate back after saving
+        Navigator.pop(context);
       } catch (e) {
         ScaffoldMessenger.of(context)
             .showSnackBar(SnackBar(content: Text('Failed to add visit: $e')));
@@ -87,23 +89,19 @@ class _AddVisitState extends State<AddVisit> {
     }
   }
 
-
   void _addDish() {
     if (_dishController.text.isNotEmpty && _rating != null) {
       setState(() {
         orders.add(
-            VisitOrder(
-                dish: Dish(
-                  id: "foo",
-                  name: _dishController.text
-                ),
-                rating: _rating!,
-                review_text: _reviewController.text
-            )
+          VisitOrder(
+            dish: Dish(id: "foo", name: _dishController.text),
+            rating: _rating!,
+            review_text: _reviewController.text,
+          ),
         );
         _dishController.clear();
         _reviewController.clear();
-        _rating = null; // Reset the rating after adding the dish
+        _rating = null;
       });
     }
   }
@@ -116,74 +114,132 @@ class _AddVisitState extends State<AddVisit> {
         padding: const EdgeInsets.all(16.0),
         child: Form(
           key: _formKey,
-          child: ListView(
-            children: [
-              TextFormField(
-                initialValue: restaurant.name,
-                decoration: InputDecoration(labelText: 'Restaurant'),
-                readOnly: true,
-              ),
-              TextFormField(
-                decoration: InputDecoration(labelText: 'Date'),
-                onTap: () => _selectDate(context),
-                controller: TextEditingController(
-                    text: visitDateTime != null
-                        ? "${visitDateTime!.toLocal()}".split(' ')[0]
-                        : ''),
-                readOnly: true,
-              ),
-              TextFormField(
-                decoration: InputDecoration(labelText: 'Time'),
-                onTap: () => _selectTime(context),
-                controller: TextEditingController(
-                    text: visitDateTime != null
-                        ? TimeOfDay(
-                        hour: visitDateTime!.hour, minute: visitDateTime!.minute)
-                        .format(context)
-                        : ''),
-                readOnly: true,
-              ),
-              TextFormField(
-                controller: _dishController,
-                decoration: InputDecoration(labelText: 'Dish Name'),
-              ),
-              SizedBox(height: 30),
-              Text(
-                  'Rate the Dish: ${_rating != null ? _rating!.toStringAsFixed(1) : 'Not rated'}'),
-              Slider(
-                value: _rating ?? 0,
-                min: 0,
-                max: 5,
-                divisions: 50, // This allows for half-point increments
-                onChanged: (value) {
-                  setState(() {
-                    _rating = value;
-                  });
-                },
-              ),
-              SizedBox(height: 20),
-              TextFormField(
-                controller: _reviewController,
-                decoration: InputDecoration(labelText: 'Review'),
-              ),
-              SizedBox(height: 25),
-              ElevatedButton(
-                onPressed: _addDish,
-                child: Text('Add Dish'),
-              ),
-              SizedBox(height: 10),
-              Text('Dishes:', style: TextStyle(fontWeight: FontWeight.bold)),
-              ...orders.map((order) => ListTile(
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Card(
+                  elevation: 3,
+                  margin: EdgeInsets.symmetric(vertical: 10),
+                  child: ListTile(
+                    title: Text(
+                      restaurant.name,
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    subtitle: Text('${restaurant.area}\n${restaurant.address}'),
+                    isThreeLine: true,
+                  ),
+                ),
+                SizedBox(height: 20),
+                Row(
+                  children: [
+                    Expanded(
+                      child: TextFormField(
+                        decoration: InputDecoration(
+                          labelText: 'Date',
+                          border: OutlineInputBorder(),
+                        ),
+                        onTap: () => _selectDate(context),
+                        controller: TextEditingController(
+                          text: visitDateTime != null
+                              ? "${visitDateTime!.toLocal()}".split(' ')[0]
+                              : '',
+                        ),
+                        readOnly: true,
+                      ),
+                    ),
+                    SizedBox(width: 10),
+                    Expanded(
+                      child: TextFormField(
+                        decoration: InputDecoration(
+                          labelText: 'Time',
+                          border: OutlineInputBorder(),
+                        ),
+                        onTap: () => _selectTime(context),
+                        controller: TextEditingController(
+                          text: visitDateTime != null
+                              ? TimeOfDay(
+                              hour: visitDateTime!.hour,
+                              minute: visitDateTime!.minute)
+                              .format(context)
+                              : '',
+                        ),
+                        readOnly: true,
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(height: 20),
+                Divider(thickness: 2),
+                SizedBox(height: 20),
+                TextFormField(
+                  controller: _dishController,
+                  decoration: InputDecoration(
+                    labelText: 'Dish Name',
+                    border: OutlineInputBorder(),
+                  ),
+                ),
+                SizedBox(height: 20),
+                Text(
+                  'Rate the Dish: ${_rating != null ? _rating!.toStringAsFixed(1) : 'Not rated'}',
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                ),
+                Slider(
+                  value: _rating ?? 0,
+                  min: 0,
+                  max: 5,
+                  divisions: 50,
+                  label: _rating?.toStringAsFixed(1) ?? 'Not rated',
+                  onChanged: (value) {
+                    setState(() {
+                      _rating = double.parse(value.toStringAsFixed(1));
+                    });
+                  },
+                ),
+                TextFormField(
+                  controller: _reviewController,
+                  decoration: InputDecoration(
+                    labelText: 'Review',
+                    border: OutlineInputBorder(),
+                  ),
+                  maxLines: 3,
+                ),
+                SizedBox(height: 20),
+                ElevatedButton.icon(
+                  onPressed: _addDish,
+                  icon: Icon(Icons.add),
+                  label: Text('Add Dish'),
+                  style: ElevatedButton.styleFrom(
+                    padding: EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+                  ),
+                ),
+                SizedBox(height: 10),
+                Divider(thickness: 2),
+                SizedBox(height: 10),
+                Text('Dishes:', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16.0)),
+                ...orders.map(
+                      (order) => ListTile(
+                    leading: Icon(Icons.restaurant, color: Colors.blueAccent),
                     title: Text(order.dish.name),
-                    subtitle:
-                        Text('Rating: ${order.rating}, Review: ${order.review_text}'),
-                  )),
-              SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: _saveVisit,
-                child: Text('Save Visit'),
-              ),
-            ],
+                    subtitle: Text(
+                      'Rating: ${order.rating}, Review: ${order.review_text}',
+                    ),
+                  ),
+                ),
+                SizedBox(height: 20),
+                Center(
+                  child: ElevatedButton.icon(
+                    onPressed: _saveVisit,
+                    icon: Icon(Icons.save),
+                    label: Text('Save Visit'),
+                    style: ElevatedButton.styleFrom(
+                      minimumSize: Size(double.infinity, 50),
+                      textStyle: TextStyle(fontSize: 18),
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
