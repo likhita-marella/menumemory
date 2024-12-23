@@ -69,79 +69,74 @@ class _VisitCardState extends State<VisitCard> {
                             SizedBox(height: 5),
                             Row(
                               children: [
-                                Row(
-                                  children: [
-                                    Text(
-                                      order.dish.name,
-                                      style: TextStyle(fontSize: 20),
+                                Text(
+                                  order.dish.name,
+                                  style: TextStyle(fontSize: 20),
+                                ),
+                                SizedBox(width: 10),
+                                Center(
+                                  child: Container(
+                                    padding: EdgeInsets.symmetric(
+                                        horizontal: 8, vertical: 4),
+                                    decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.all(
+                                          Radius.circular(20)),
+                                      border: Border.all(
+                                        color: Colors.black,
+                                        width:
+                                            0.5, // Adjust the width for a thicker or thinner border
+                                      ),
                                     ),
-                                    SizedBox(width: 10),
-                                    Center(
-                                      child: Container(
-                                        padding: EdgeInsets.symmetric(
-                                            horizontal: 8, vertical: 4),
-                                        decoration: BoxDecoration(
-                                          color: Colors.white,
-                                          borderRadius: BorderRadius.all(
-                                              Radius.circular(20)),
-                                          border: Border.all(
+                                    child: Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Text(
+                                          "${order.rating}",
+                                          style: TextStyle(
                                             color: Colors.black,
-                                            width:
-                                                0.5, // Adjust the width for a thicker or thinner border
+                                            fontSize: 16,
                                           ),
                                         ),
-                                        child: Row(
-                                          mainAxisSize: MainAxisSize.min,
-                                          children: [
-                                            Text(
-                                              "${order.rating}",
-                                              style: TextStyle(
-                                                color: Colors.black,
-                                                fontSize: 16,
-                                              ),
-                                            ),
-                                            SizedBox(width: 4),
-                                            Text(
-                                              "⭐",
-                                              style: TextStyle(
-                                                color: Colors.black,
-                                                fontSize: 16,
-                                              ),
-                                            ),
-                                          ],
+                                        SizedBox(width: 4),
+                                        Text(
+                                          "⭐",
+                                          style: TextStyle(
+                                            color: Colors.black,
+                                            fontSize: 16,
+                                          ),
                                         ),
-                                      ),
-                                    )
-                                  ],
-                                ),
-
-                                /// Added the readmore functionality
-                                ReadMoreText(
-                                  '"${order.review_text!}"',
-                                  trimMode: TrimMode.Line,
-                                  trimLines: 3,
-                                  colorClickableText: Colors.black,
-                                  trimCollapsedText: ' Read more',
-                                  trimExpandedText: ' Read less',
-                                  moreStyle: TextStyle(fontSize: 16),
-                                  style: TextStyle(fontSize: 16),
-                                ),
-                                SizedBox(height: 5),
-                                Divider(thickness: 1, color: Colors.grey)
+                                      ],
+                                    ),
+                                  ),
+                                )
                               ],
-                            )),
-                  if (!isMinimized)
-                    Center(
-                        child: TextButton(
-                            onPressed: () {
-                              setState(() {
-                                seeAll = !seeAll;
-                              });
-                            },
-                            child: Text(seeAll ? "See less" : "See more")))
+                            ),
+                            // Added the readmore functionality
+                            ReadMoreText(
+                              '"${order.review_text!}"',
+                              trimMode: TrimMode.Line,
+                              trimLines: 3,
+                              colorClickableText: Colors.black,
+                              trimCollapsedText: ' Read more',
+                              trimExpandedText: ' Read less',
+                              moreStyle: TextStyle(fontSize: 16),
+                              style: TextStyle(fontSize: 16),
+                            ),
+                            SizedBox(height: 5),
+                            Divider(thickness: 1, color: Colors.grey)
                 ],
               ),
             ),
-    );
+            if (!isMinimized)
+              Center(
+                  child: TextButton(
+                      onPressed: () {
+                        setState(() {
+                          seeAll = !seeAll;
+                        });
+                      },
+                      child: Text(seeAll ? "See less" : "See more")))
+    ])));
   }
 }
