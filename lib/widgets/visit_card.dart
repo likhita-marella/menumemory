@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:menumemory/models/visit.dart';
@@ -55,7 +57,7 @@ class _VisitCardState extends State<VisitCard> {
                     ],
                   ),
                   if (!isMinimized)
-                    ...widget.visit!.order.sublist(0, seeAll ? widget.visit!.order.length : 2).map((order) => Column(
+                    ...widget.visit!.order.sublist(0, seeAll ? widget.visit!.order.length : min(2, widget.visit!.order.length)).map((order) => Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             SizedBox(height: 5),

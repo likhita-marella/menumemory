@@ -1,5 +1,10 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:menumemory/models/order.dart';
+import 'package:menumemory/models/restaurant.dart';
+
+import '../models/dish.dart';
 
 class AddVisit extends StatefulWidget {
   @override
@@ -10,10 +15,14 @@ class _AddVisitState extends State<AddVisit> {
   final _formKey = GlobalKey<FormState>();
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  String restaurant = 'Your Hardcoded Restaurant Name'; // Hardcoded restaurant
-  DateTime? visitDate;
-  TimeOfDay? visitTime;
-  final List<Dish> dishes = [];
+  Restaurant restaurant =  Restaurant(
+      id: "05b729d0-74de-11ef-920e-76e1daf4cd58",
+      name: "Chaatimes",
+      area: "Basavanagudi",
+      address: "39, 3rd Main,4th Cross, Hanumanth Nagar, Near, Basavanagudi, Bangalore"
+  );
+  DateTime? visitDateTime;
+  final List<VisitOrder> orders = [];
   final TextEditingController _dishController = TextEditingController();
   final TextEditingController _reviewController = TextEditingController();
   double? _rating; // Nullable rating
@@ -22,11 +31,11 @@ class _AddVisitState extends State<AddVisit> {
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
       try {
-        await _firestore.collection('visits').add({
-          'restaurant': restaurant,
-          'date': visitDate,
-          'time': visitTime,
-          'dishes': dishes.map((d) => d.toMap()).toList(),
+        await _firestore.collection('users/${FirebaseAuth.instance.currentUser!.uid}/visits').add({
+          'restaurant_id': restaurant.id,
+          'restaurant_info': restaurant.toMap(),
+          'datetime': visitDateTime,
+          'order': orders.map((o) => o.toMap()).toList(),
         });
         ScaffoldMessenger.of(context)
             .showSnackBar(SnackBar(content: Text('Visit added successfully!')));
@@ -41,13 +50,19 @@ class _AddVisitState extends State<AddVisit> {
   Future<void> _selectDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
       context: context,
-      initialDate: visitDate ?? DateTime.now(),
+      initialDate: visitDateTime ?? DateTime.now(),
       firstDate: DateTime(2000),
       lastDate: DateTime(2101),
     );
-    if (picked != null && picked != visitDate) {
+    if (picked != null) {
       setState(() {
-        visitDate = picked;
+        visitDateTime = DateTime(
+          picked.year,
+          picked.month,
+          picked.day,
+          visitDateTime?.hour ?? 0,
+          visitDateTime?.minute ?? 0,
+        );
       });
     }
   }
@@ -55,22 +70,37 @@ class _AddVisitState extends State<AddVisit> {
   Future<void> _selectTime(BuildContext context) async {
     final TimeOfDay? picked = await showTimePicker(
       context: context,
-      initialTime: visitTime ?? TimeOfDay.now(),
+      initialTime: visitDateTime != null
+          ? TimeOfDay(hour: visitDateTime!.hour, minute: visitDateTime!.minute)
+          : TimeOfDay.now(),
     );
-    if (picked != null && picked != visitTime) {
+    if (picked != null) {
       setState(() {
-        visitTime = picked;
+        visitDateTime = DateTime(
+          visitDateTime?.year ?? DateTime.now().year,
+          visitDateTime?.month ?? DateTime.now().month,
+          visitDateTime?.day ?? DateTime.now().day,
+          picked.hour,
+          picked.minute,
+        );
       });
     }
   }
 
+
   void _addDish() {
     if (_dishController.text.isNotEmpty && _rating != null) {
       setState(() {
-        dishes.add(Dish(
-            name: _dishController.text,
-            rating: _rating!,
-            review: _reviewController.text));
+        orders.add(
+            VisitOrder(
+                dish: Dish(
+                  id: "foo",
+                  name: _dishController.text
+                ),
+                rating: _rating!,
+                review_text: _reviewController.text
+            )
+        );
         _dishController.clear();
         _reviewController.clear();
         _rating = null; // Reset the rating after adding the dish
@@ -86,10 +116,10 @@ class _AddVisitState extends State<AddVisit> {
         padding: const EdgeInsets.all(16.0),
         child: Form(
           key: _formKey,
-          child: Column(
+          child: ListView(
             children: [
               TextFormField(
-                initialValue: restaurant,
+                initialValue: restaurant.name,
                 decoration: InputDecoration(labelText: 'Restaurant'),
                 readOnly: true,
               ),
@@ -97,8 +127,8 @@ class _AddVisitState extends State<AddVisit> {
                 decoration: InputDecoration(labelText: 'Date'),
                 onTap: () => _selectDate(context),
                 controller: TextEditingController(
-                    text: visitDate != null
-                        ? "${visitDate!.toLocal()}".split(' ')[0]
+                    text: visitDateTime != null
+                        ? "${visitDateTime!.toLocal()}".split(' ')[0]
                         : ''),
                 readOnly: true,
               ),
@@ -106,7 +136,11 @@ class _AddVisitState extends State<AddVisit> {
                 decoration: InputDecoration(labelText: 'Time'),
                 onTap: () => _selectTime(context),
                 controller: TextEditingController(
-                    text: visitTime != null ? visitTime!.format(context) : ''),
+                    text: visitDateTime != null
+                        ? TimeOfDay(
+                        hour: visitDateTime!.hour, minute: visitDateTime!.minute)
+                        .format(context)
+                        : ''),
                 readOnly: true,
               ),
               TextFormField(
@@ -139,10 +173,10 @@ class _AddVisitState extends State<AddVisit> {
               ),
               SizedBox(height: 10),
               Text('Dishes:', style: TextStyle(fontWeight: FontWeight.bold)),
-              ...dishes.map((dish) => ListTile(
-                    title: Text(dish.name),
+              ...orders.map((order) => ListTile(
+                    title: Text(order.dish.name),
                     subtitle:
-                        Text('Rating: ${dish.rating}, Review: ${dish.review}'),
+                        Text('Rating: ${order.rating}, Review: ${order.review_text}'),
                   )),
               SizedBox(height: 20),
               ElevatedButton(
@@ -154,21 +188,5 @@ class _AddVisitState extends State<AddVisit> {
         ),
       ),
     );
-  }
-}
-
-class Dish {
-  final String name;
-  final double rating;
-  final String review;
-
-  Dish({required this.name, required this.rating, required this.review});
-
-  Map<String, dynamic> toMap() {
-    return {
-      'name': name,
-      'rating': rating,
-      'review': review,
-    };
   }
 }
