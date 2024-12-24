@@ -1,5 +1,6 @@
 .DS_Store
 .idea
+lib/secrets.dart
 
 # Logs
 logs
