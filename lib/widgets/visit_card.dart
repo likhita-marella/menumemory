@@ -100,7 +100,7 @@ class _VisitCardState extends State<VisitCard> {
                                         ),
                                         SizedBox(width: 4),
                                         Text(
-                                          "⭐",
+                                          "🥨",
                                           style: TextStyle(
                                             color: Colors.black,
                                             fontSize: 16,
